@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Clone AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=gg+sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              discord: {
+                darkest: '#1E1F22',
+                darker: '#2B2D31',
+                dark: '#313338',
+                light: '#404249',
+                primary: '#5865F2',
+                green: '#23A559',
+                yellow: '#F0B232',
+                red: '#F23F42',
+                text: {
+                  normal: '#DBDEE1',
+                  muted: '#949BA4',
+                  header: '#F2F3F5'
+                }
+              }
+            },
+            fontFamily: {
+              sans: ['"gg sans"', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #313338;
+        color: #DBDEE1;
+        overflow: hidden;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+        background-color: #2B2D31;
+      }
+      ::-webkit-scrollbar-thumb {
+        background-color: #1A1B1E;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background-color: #2B2D31;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "peerjs": "https://esm.sh/peerjs@1.5.4?bundle-deps"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

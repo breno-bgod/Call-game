@@ -1,0 +1,7 @@
+{
+  "name": "Discord Clone AI",
+  "description": "Um clone do Discord com interface moderna e integração de Chatbot via Gemini API.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
