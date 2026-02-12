@@ -19,37 +19,37 @@ const MessageItem: React.FC<{ message: Message; user?: User; isConsecutive?: boo
     : message.timestamp.toLocaleDateString();
 
   return (
-    <div className={`group flex px-4 hover:bg-[#2e3035] ${isConsecutive ? 'py-0.5 mt-0' : 'py-0.5 mt-[17px]'}`}>
+    <div className={`group flex px-6 hover:bg-white/5 transition-colors ${isConsecutive ? 'py-1 mt-0' : 'py-1 mt-4'}`}>
       {!isConsecutive ? (
-        <div className="mt-0.5 mr-4 cursor-pointer hover:drop-shadow-md">
-           <img src={user?.avatar || "https://picsum.photos/200"} alt="avatar" className="w-10 h-10 rounded-full object-cover hover:opacity-80" />
+        <div className="mt-1 mr-4 cursor-pointer hover:scale-105 transition-transform">
+           <img src={user?.avatar || "https://picsum.photos/200"} alt="avatar" className="w-10 h-10 rounded-full object-cover shadow-lg" />
         </div>
       ) : (
-        <div className="w-10 mr-4 text-[10px] text-discord-text-muted opacity-0 group-hover:opacity-100 flex items-center justify-end select-none">
+        <div className="w-10 mr-4 text-[10px] text-gamer-text-muted opacity-0 group-hover:opacity-100 flex items-center justify-end select-none">
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       )}
       
       <div className="flex-1 min-w-0">
         {!isConsecutive && (
-          <div className="flex items-center">
-            <span className={`font-medium mr-2 hover:underline cursor-pointer ${user?.isBot ? 'text-blue-400' : 'text-white'}`}>
+          <div className="flex items-center mb-1">
+            <span className={`font-bold mr-2 hover:underline cursor-pointer text-sm ${user?.isBot ? 'text-gamer-accent drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]' : 'text-white'}`}>
               {user?.username || "Desconhecido"}
             </span>
             {user?.isBot && (
-              <span className="bg-[#5865F2] text-white text-[10px] px-1.5 rounded-[3px] flex items-center h-[15px] mr-2">
-                BOT
+              <span className="bg-gamer-primary/80 text-white text-[9px] px-1.5 rounded-[4px] flex items-center h-[16px] mr-2 font-bold border border-white/20">
+                AI
               </span>
             )}
-            <span className="text-xs text-discord-text-muted ml-0.5">{dateStr}</span>
+            <span className="text-[10px] text-gamer-text-muted ml-0.5">{dateStr}</span>
           </div>
         )}
-        <div className={`text-discord-text-normal whitespace-pre-wrap break-words leading-[1.375rem] ${isConsecutive ? '' : ''}`}>
+        <div className={`text-gamer-text-main/90 whitespace-pre-wrap break-words leading-relaxed text-[15px] font-light ${isConsecutive ? '' : ''}`}>
            {/* Simple Markdown-ish Rendering for Code Blocks */}
            {message.content.split('```').map((part, index) => {
              if (index % 2 === 1) {
                return (
-                 <pre key={index} className="bg-[#2B2D31] p-2 rounded border border-[#1E1F22] my-1 overflow-x-auto font-mono text-sm">
+                 <pre key={index} className="bg-black/30 p-3 rounded-xl border border-white/10 my-2 overflow-x-auto font-mono text-sm text-gamer-accent">
                    <code>{part}</code>
                  </pre>
                );
@@ -89,29 +89,34 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col bg-[#313338] min-w-0">
+    <div className="flex-1 flex flex-col glass-panel rounded-[30px] min-w-0 overflow-hidden relative">
+      {/* Decorative top sheen */}
+      <div className="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+
       {/* Chat Header */}
-      <header className="h-12 px-4 flex items-center justify-between shadow-sm border-b border-[#26272D]">
-        <div className="flex items-center text-discord-text-header font-bold">
-          <Hash className="text-discord-text-muted mr-2" size={24} />
-          <span className="mr-4">{channel.name}</span>
+      <header className="h-16 px-6 flex items-center justify-between border-b border-white/5 bg-white/[0.02]">
+        <div className="flex items-center text-white font-bold text-lg">
+          <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mr-3 text-gamer-text-muted">
+             <Hash size={18} />
+          </div>
+          <span className="mr-3 drop-shadow-md">{channel.name}</span>
           {channel.name === 'gemini-chat' && (
-             <span className="text-xs font-normal text-discord-text-muted bg-[#2B2D31] px-2 py-0.5 rounded">Chat com IA</span>
+             <span className="text-[10px] font-bold text-gamer-secondary bg-gamer-secondary/10 px-2 py-0.5 rounded-full border border-gamer-secondary/30">AI Powered</span>
           )}
         </div>
         
-        <div className="flex items-center text-discord-text-muted space-x-4">
-          <Bell size={24} className="hover:text-discord-text-normal cursor-pointer hidden md:block" />
-          <Pin size={24} className="hover:text-discord-text-normal cursor-pointer hidden md:block" />
-          <Users size={24} className={`hover:text-discord-text-normal cursor-pointer md:text-white`} onClick={toggleMembers} />
+        <div className="flex items-center text-gamer-text-muted space-x-4">
+          <Bell size={20} className="hover:text-white cursor-pointer transition-colors hidden md:block" />
+          <Pin size={20} className="hover:text-white cursor-pointer transition-colors hidden md:block" />
+          <Users size={20} className={`hover:text-white cursor-pointer transition-colors md:text-gamer-text-muted`} onClick={toggleMembers} />
           
           <div className="relative hidden md:block">
              <input 
                type="text" 
-               placeholder="Buscar" 
-               className="bg-[#1E1F22] text-sm px-2 py-1 rounded w-36 transition-all focus:w-60 focus:outline-none text-discord-text-normal" 
+               placeholder="Buscar..." 
+               className="bg-black/20 border border-white/5 text-sm px-3 pl-8 py-1.5 rounded-full w-40 transition-all focus:w-60 focus:outline-none focus:border-gamer-primary/50 text-white placeholder-white/30" 
              />
-             <Search size={16} className="absolute right-2 top-1.5" />
+             <Search size={14} className="absolute left-2.5 top-2.5 text-white/30" />
           </div>
         </div>
       </header>
@@ -119,14 +124,19 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
       {/* Messages List */}
       <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
         {/* Channel Welcome Message */}
-        <div className="mt-auto px-4 pb-4 pt-10">
-          <div className="w-[68px] h-[68px] bg-[#41434A] rounded-full flex items-center justify-center mb-4">
-             <Hash size={42} className="text-white" />
+        <div className="mt-auto px-6 pb-6 pt-10">
+          <div className="w-16 h-16 bg-gradient-to-br from-gamer-card to-black/40 rounded-3xl flex items-center justify-center mb-4 shadow-lg border border-white/10">
+             <Hash size={40} className="text-white opacity-80" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Bem-vindo(a) a #{channel.name}!</h1>
-          <p className="text-discord-text-muted">Este é o começo do canal #{channel.name}.</p>
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gamer-text-muted mb-2">
+            Bem-vindo(a) a #{channel.name}!
+          </h1>
+          <p className="text-gamer-text-muted">Este é o começo da lendária jornada em #{channel.name}.</p>
           {channel.name === 'gemini-chat' && (
-            <p className="text-blue-400 mt-2 text-sm font-medium">✨ Converse com o Gemini Bot aqui! Ele responde a qualquer coisa.</p>
+            <p className="text-gamer-accent mt-2 text-sm font-medium flex items-center gap-2">
+               <span className="inline-block w-2 h-2 rounded-full bg-gamer-accent animate-pulse"></span>
+               Converse com o Gemini Bot aqui! Ele é super inteligente.
+            </p>
           )}
         </div>
 
@@ -146,12 +156,12 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
           })}
           
           {isLoadingAi && (
-             <div className="flex px-4 py-2 mt-2">
-                <div className="flex items-center space-x-2">
-                   <div className="w-2 h-2 bg-discord-text-muted rounded-full animate-bounce" style={{ animationDelay: '0ms'}} />
-                   <div className="w-2 h-2 bg-discord-text-muted rounded-full animate-bounce" style={{ animationDelay: '150ms'}} />
-                   <div className="w-2 h-2 bg-discord-text-muted rounded-full animate-bounce" style={{ animationDelay: '300ms'}} />
-                   <span className="text-xs text-discord-text-muted ml-2">Gemini está pensando...</span>
+             <div className="flex px-6 py-2 mt-2">
+                <div className="flex items-center space-x-2 bg-white/5 px-4 py-2 rounded-full rounded-tl-none">
+                   <div className="w-2 h-2 bg-gamer-accent rounded-full animate-bounce" style={{ animationDelay: '0ms'}} />
+                   <div className="w-2 h-2 bg-gamer-accent rounded-full animate-bounce" style={{ animationDelay: '150ms'}} />
+                   <div className="w-2 h-2 bg-gamer-accent rounded-full animate-bounce" style={{ animationDelay: '300ms'}} />
+                   <span className="text-xs text-gamer-text-muted ml-2">Pensando...</span>
                 </div>
              </div>
           )}
@@ -160,9 +170,11 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
       </div>
 
       {/* Input Area */}
-      <div className="px-4 pb-6">
-        <div className="bg-[#383A40] rounded-lg px-4 py-2.5 flex items-center">
-          <PlusCircle className="text-discord-text-muted hover:text-discord-text-normal cursor-pointer mr-4" size={24} />
+      <div className="px-6 pb-6 pt-2">
+        <div className="bg-black/30 backdrop-blur-md rounded-full px-2 py-2 flex items-center border border-white/10 focus-within:border-gamer-primary/50 focus-within:ring-1 focus-within:ring-gamer-primary/50 transition-all shadow-lg">
+          <button className="p-2 rounded-full hover:bg-white/10 text-gamer-text-muted hover:text-white transition-colors">
+            <PlusCircle size={22} />
+          </button>
           
           <input 
             ref={inputRef}
@@ -171,25 +183,26 @@ export const ChatArea: React.FC<ChatAreaProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={`Conversar em #${channel.name}`}
-            className="bg-transparent flex-1 focus:outline-none text-discord-text-normal placeholder-[#949BA4]"
+            className="bg-transparent flex-1 focus:outline-none text-white placeholder-white/30 px-2"
             autoFocus
           />
           
-          <div className="flex items-center space-x-3 ml-2 text-discord-text-muted">
-            <Gift className="hover:text-discord-text-normal cursor-pointer" size={24} />
-            <Sticker className="hover:text-discord-text-normal cursor-pointer" size={24} />
-            <Smile className="hover:text-discord-text-normal cursor-pointer" size={24} />
+          <div className="flex items-center space-x-1 mr-2 text-gamer-text-muted">
+            <button className="p-2 hover:bg-white/10 rounded-full hover:text-white transition-colors"><Gift size={20} /></button>
+            <button className="p-2 hover:bg-white/10 rounded-full hover:text-white transition-colors"><Sticker size={20} /></button>
+            <button className="p-2 hover:bg-white/10 rounded-full hover:text-white transition-colors"><Smile size={20} /></button>
             {inputValue.length > 0 && (
-                 <SendHorizontal 
+                 <button 
                     onClick={() => {
                         if (inputValue.trim()) {
                             onSendMessage(inputValue);
                             setInputValue('');
                         }
                     }}
-                    className="text-discord-primary hover:text-white cursor-pointer transition-colors" 
-                    size={24} 
-                 />
+                    className="p-2 bg-gamer-primary text-white rounded-full hover:bg-gamer-primary/80 transition-all ml-2 shadow-[0_0_10px_#6366f1]" 
+                 >
+                    <SendHorizontal size={18} />
+                 </button>
             )}
           </div>
         </div>

@@ -18,25 +18,30 @@ const VoiceAvatar: React.FC<{
   isBot?: boolean;
 }> = ({ user, isSpeaking, isMuted, isBot }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-[#2B2D31] w-48 h-40 relative group border border-transparent hover:bg-[#3F4147] transition-colors animate-in fade-in zoom-in duration-300">
-      <div className={`relative rounded-full p-[3px] transition-all duration-100 ${isSpeaking ? 'bg-discord-green shadow-[0_0_0_2px_#23A559]' : ''}`}>
-        <img 
-            src={user.avatar} 
-            alt={user.username} 
-            className={`w-20 h-20 rounded-full object-cover bg-[#1E1F22] ${isSpeaking ? 'opacity-100' : 'opacity-80'}`} 
-        />
+    <div className={`flex flex-col items-center justify-center p-4 rounded-3xl w-48 h-48 relative group transition-all duration-300
+        ${isSpeaking ? 'bg-gradient-to-br from-gamer-card to-gamer-primary/20 border-gamer-primary/50 shadow-[0_0_20px_rgba(99,102,241,0.2)]' : 'bg-white/5 hover:bg-white/10 border-transparent'}
+        border backdrop-blur-sm
+    `}>
+      <div className={`relative rounded-full p-[4px] transition-all duration-300 ${isSpeaking ? 'bg-gradient-to-r from-gamer-primary to-gamer-accent animate-spin-slow' : 'bg-transparent'}`}>
+        <div className="rounded-full overflow-hidden p-[2px] bg-[#1e202f]">
+             <img 
+                src={user.avatar} 
+                alt={user.username} 
+                className={`w-20 h-20 rounded-full object-cover bg-[#0F111A] transition-opacity ${isSpeaking ? 'opacity-100' : 'opacity-80'}`} 
+            />
+        </div>
         {isMuted && (
-            <div className="absolute bottom-0 right-0 bg-[#F23F42] rounded-full p-1 border-[3px] border-[#2B2D31]">
+            <div className="absolute bottom-0 right-0 bg-red-500 rounded-full p-1.5 border-[3px] border-[#1e202f] shadow-md">
                 <MicOff size={12} className="text-white" />
             </div>
         )}
       </div>
-      <div className="mt-3 font-semibold text-white truncate max-w-full px-2 flex items-center gap-2">
+      <div className="mt-4 font-bold text-white truncate max-w-full px-2 flex items-center gap-2">
          {user.username}
-         {isBot && <span className="bg-[#5865F2] text-white text-[10px] px-1.5 rounded-[3px] flex items-center h-[15px]">AI</span>}
+         {isBot && <span className="bg-gamer-primary text-white text-[9px] px-1.5 rounded-full flex items-center h-[16px] shadow-lg">AI</span>}
       </div>
-      <div className="absolute top-2 right-2 hidden group-hover:block bg-black/50 px-1.5 rounded text-xs text-white">
-        {isBot ? 'Gemini Live' : 'Conectado'}
+      <div className={`absolute top-3 right-3 transition-opacity duration-300 ${isSpeaking || isBot ? 'opacity-100' : 'opacity-0'}`}>
+        {isSpeaking && <div className="w-2 h-2 bg-gamer-accent rounded-full shadow-[0_0_8px_#06b6d4]"></div>}
       </div>
     </div>
   );
@@ -190,7 +195,10 @@ export const VoiceStage: React.FC<VoiceStageProps> = ({ channel, currentUser, lo
   };
 
   return (
-    <div className="flex-1 bg-[#1E1F22] flex flex-col min-w-0">
+    <div className="flex-1 glass-panel rounded-[30px] flex flex-col min-w-0 relative overflow-hidden">
+        {/* Decorative background blur */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30 pointer-events-none"></div>
+
         {/* Remote Audio Elements */}
         {Array.from(remotePeers.values()).map((peer: { stream: MediaStream; user: User }) => (
              <audio 
@@ -200,46 +208,52 @@ export const VoiceStage: React.FC<VoiceStageProps> = ({ channel, currentUser, lo
              />
         ))}
 
-        <header className="h-12 px-4 flex items-center justify-between shadow-sm border-b border-[#26272D] shrink-0">
+        <header className="h-20 px-6 flex items-center justify-between z-10">
             <div className="flex items-center">
-                <Volume2 className="text-discord-text-muted mr-2" size={24} />
-                <span className="font-bold text-white mr-4">{channel.name}</span>
-                <span className="text-xs bg-discord-green text-white px-1.5 rounded mr-2">Gemini Live On</span>
-                {remotePeers.size > 0 && <span className="text-xs bg-discord-primary text-white px-1.5 rounded">P2P Ativo</span>}
+                <div className="w-10 h-10 rounded-full bg-gamer-accent/10 flex items-center justify-center mr-4 text-gamer-accent">
+                    <Volume2 size={20} />
+                </div>
+                <div>
+                     <span className="font-bold text-white text-lg block">{channel.name}</span>
+                     <div className="flex gap-2">
+                        <span className="text-[10px] bg-gamer-accent/20 text-gamer-accent px-2 py-0.5 rounded-full border border-gamer-accent/20 font-bold">Gemini Live</span>
+                        {remotePeers.size > 0 && <span className="text-[10px] bg-gamer-primary/20 text-gamer-primary px-2 py-0.5 rounded-full border border-gamer-primary/20 font-bold">P2P</span>}
+                     </div>
+                </div>
             </div>
 
-            {/* P2P Controls */}
-            <div className="flex items-center gap-2 bg-[#111214] p-1 rounded-lg">
-                <div className="flex items-center px-2 border-r border-[#3F4147] pr-3 mr-1">
-                    <span className="text-xs text-discord-text-muted mr-2 font-bold uppercase">Seu ID</span>
-                    <button onClick={copyId} className="flex items-center gap-1 text-xs bg-[#2B2D31] hover:bg-[#35373C] text-white px-2 py-1 rounded transition-colors" title="Copiar seu ID para enviar a um amigo">
-                         <span className="max-w-[80px] truncate">{myPeerId || 'Gerando...'}</span>
-                         <LinkIcon size={12} />
+            {/* P2P Controls - Floating capsule */}
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md p-1.5 rounded-full border border-white/10 shadow-lg">
+                <div className="flex items-center px-3 border-r border-white/10 pr-3 mr-1">
+                    <span className="text-[10px] text-gamer-text-muted mr-2 font-bold uppercase tracking-wider">Seu ID</span>
+                    <button onClick={copyId} className="flex items-center gap-2 text-xs bg-white/5 hover:bg-white/10 text-white px-3 py-1.5 rounded-full transition-colors border border-white/5" title="Copiar seu ID para enviar a um amigo">
+                         <span className="max-w-[80px] truncate font-mono">{myPeerId || '...'}</span>
+                         <LinkIcon size={12} className="text-gamer-accent" />
                     </button>
                 </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 pr-1">
                     <input 
                         type="text" 
                         placeholder="ID do Amigo" 
                         value={connectId}
                         onChange={(e) => setConnectId(e.target.value)}
-                        className="bg-[#2B2D31] text-xs text-white px-2 py-1 rounded w-28 focus:outline-none focus:ring-1 focus:ring-discord-primary"
+                        className="bg-transparent text-xs text-white px-2 py-1 w-24 focus:outline-none placeholder-white/20"
                     />
                     <button 
                         onClick={connectToFriend}
                         disabled={connectionStatus === 'connecting' || !connectId}
-                        className={`p-1.5 rounded transition-colors ${connectionStatus === 'connecting' ? 'bg-gray-500 cursor-not-allowed' : 'bg-discord-green hover:bg-green-600 text-white'}`}
-                        title="Conectar ao ID"
+                        className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${connectionStatus === 'connecting' ? 'bg-gray-500 cursor-not-allowed' : 'bg-gamer-accent hover:bg-cyan-400 text-black shadow-[0_0_10px_rgba(6,182,212,0.4)]'}`}
+                        title="Conectar"
                     >
-                        <ArrowRight size={14} />
+                        <ArrowRight size={14} className="font-bold" />
                     </button>
                 </div>
             </div>
         </header>
 
-        <div className="flex-1 p-6 overflow-y-auto flex items-center justify-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-5xl">
+        <div className="flex-1 p-6 overflow-y-auto flex items-center justify-center z-10 custom-scrollbar">
+            <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-5xl">
                 {/* Local User */}
                 <VoiceAvatar user={currentUser} isSpeaking={isUserSpeaking} />
 
@@ -262,32 +276,29 @@ export const VoiceStage: React.FC<VoiceStageProps> = ({ channel, currentUser, lo
                     <VoiceAvatar 
                         key={peer.user.id} 
                         user={peer.user} 
-                        isSpeaking={false} // Would need audio analysis on remote stream for true value
+                        isSpeaking={false} 
                     />
                 ))}
             </div>
         </div>
 
-        <div className="h-20 bg-[#2B2D31] flex items-center justify-center p-4 gap-4 shrink-0">
-             <div className="flex flex-col items-center">
-                 <button className="w-12 h-12 rounded-full bg-white flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <Mic size={24} className="text-black" />
+        <div className="h-24 flex items-center justify-center p-4 gap-6 shrink-0 z-10 pb-8">
+             <div className="flex flex-col items-center group cursor-pointer">
+                 <button className="w-14 h-14 rounded-full bg-white text-black flex items-center justify-center hover:scale-110 transition-all shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                    <Mic size={24} />
                  </button>
-                 <span className="text-xs text-discord-text-muted mt-1">Microfone</span>
              </div>
 
-             <div className="flex flex-col items-center">
-                 <button className="w-14 h-14 rounded-full bg-discord-red flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg">
-                    <PhoneOff size={28} className="text-white" />
+             <div className="flex flex-col items-center group cursor-pointer mx-4">
+                 <button className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center hover:scale-110 hover:bg-red-600 transition-all shadow-[0_0_20px_rgba(239,68,68,0.4)] border-4 border-[#0F111A]">
+                    <PhoneOff size={32} className="text-white" />
                  </button>
-                 <span className="text-xs text-discord-text-muted mt-1">Desconectar</span>
              </div>
              
-             <div className="flex flex-col items-center ml-4">
-                 <button onClick={() => alert("Compartilhe seu ID (no topo da tela) com um amigo para ele se conectar a você!")} className="w-12 h-12 rounded-full bg-[#2B2D31] flex items-center justify-center hover:bg-[#35373C] transition-colors">
-                    <UserPlus size={24} className="text-discord-text-normal" />
+             <div className="flex flex-col items-center group cursor-pointer">
+                 <button onClick={() => alert("Compartilhe seu ID (no topo da tela) com um amigo para ele se conectar a você!")} className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all border border-white/10 hover:border-white/30">
+                    <UserPlus size={24} className="text-white" />
                  </button>
-                 <span className="text-xs text-discord-text-muted mt-1">Convidar</span>
              </div>
         </div>
     </div>

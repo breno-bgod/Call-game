@@ -67,12 +67,8 @@ export default function App() {
   };
 
   const handleChannelSelect = async (channel: Channel) => {
-    // Usually in Discord, clicking a text channel just views it.
-    // Clicking a voice channel joins it AND views it.
-    
     if (channel.type === 'voice') {
         if (connectedVoiceChannelId !== channel.id) {
-             // Logic to join voice with specific device ID if selected
              try {
                 const constraints = {
                     audio: inputDeviceId && inputDeviceId !== 'default' 
@@ -91,8 +87,6 @@ export default function App() {
              }
         }
     }
-    
-    // Always switch the view
     setSelectedChannelId(channel.id);
   };
 
@@ -102,7 +96,6 @@ export default function App() {
           setLocalStream(null);
       }
       setConnectedVoiceChannelId(null);
-      // If we are looking at the voice channel we just left, switch to a text channel
       if (activeChannel.type === 'voice') {
           const firstText = activeServer.channels.find(c => c.type === 'text');
           if (firstText) setSelectedChannelId(firstText.id);
@@ -123,11 +116,8 @@ export default function App() {
       [selectedChannelId]: [...(prev[selectedChannelId] || []), newMessage]
     }));
 
-    // AI Integration Logic
     if (activeChannel.name === 'gemini-chat' || content.toLowerCase().startsWith('@gemini')) {
         setIsLoadingAi(true);
-        
-        // Prepare context (last 10 messages)
         const history = (messages[selectedChannelId] || []).slice(-10).map(m => ({
             role: m.senderId === 'gemini' ? 'model' : 'user',
             content: m.content
@@ -152,7 +142,13 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen w-screen bg-[#313338] font-sans overflow-hidden">
+    // Background Gradient and Padding for Floating Effect
+    <div className="flex h-screen w-screen bg-app-gradient font-sans overflow-hidden p-4 gap-4 text-gamer-text-main relative">
+      
+      {/* Decorative Glows */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-gamer-primary opacity-20 blur-[100px] pointer-events-none rounded-full translate-x-[-50%] translate-y-[-50%]"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-gamer-accent opacity-10 blur-[100px] pointer-events-none rounded-full translate-x-[50%] translate-y-[50%]"></div>
+
       <ServerSidebar 
         servers={servers} 
         selectedServerId={selectedServerId} 
@@ -170,7 +166,7 @@ export default function App() {
         currentUser={CURRENT_USER}
       />
       
-      <div className="flex-1 flex min-w-0 relative">
+      <div className="flex-1 flex min-w-0 relative gap-4">
         {activeChannel.type === 'voice' ? (
             <VoiceStage 
                 channel={activeChannel}
